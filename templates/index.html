@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rock, Paper or Scissors</title>
+    <link rel="shortcut icon" type="image/x-icon" href="static/images/logo.jpg" />
+    <style>
+        body {
+            padding: 30px;
+            justify-items: center;
+        }
+        .name-form, .sel-img, .win-box {
+            background-color: rgb(192, 188, 188);
+            border: 2px solid black;
+            border-radius: 30px;
+            padding: 20px;
+            margin: 20px;
+            width: 700px;
+            height: 500px;
+            justify-items: center;
+            align-content: center;
+        }
+        .name-form h1 {
+            margin-bottom: 30px;
+        }
+        .name-form form {
+            margin-top: 60px;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .name-form input {
+            border: 2px solid black;
+            border-radius: 10px;
+            width: 400px;
+            height: 40px;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 300;
+            padding-left: 10px;
+        }
+        .name-form button {
+            border: none;
+            border-radius: 10px;
+            margin-top: 30px;
+            width: 150px;
+            height: 40px;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: black;
+            color: white;
+        }
+        .name-form button:hover {
+            cursor: pointer;
+            background-color: rgb(47, 46, 46);
+            color: white;
+        }
+        .img-grp {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            padding: 20px;
+        }
+        .img-grp form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .img-grp img, .win-box img {
+            margin: 10px;
+            width: 150px;
+            height: 150px;
+        }
+        .img-grp img:hover {
+            cursor: pointer;
+        }
+        .img-grp button {
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 20px;
+        }
+        .sel-grp {
+            display: flex;
+            flex-direction: row;
+            gap: 100px;
+            margin: 30px;
+        }
+        .sel-img p {
+            font-size: 20px;
+            font-weight: bold;
+            font-family:'Courier New', Courier, monospace;
+        }
+        .win-box img {
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 20px;
+        }
+        .sel-grp-user, .sel-grp-bot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .win-box a {
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: white;
+            color: black;
+            margin: 10px;
+            padding: 10px;
+            width: 150px;
+            height: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .win-box p {
+            font-size: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% if not msg %}
+    <div class="name-form">
+        <h1>Welcome🙂 to</h1>
+        <h1>Rock🪨 Paper📃 Scissors✂️!</h1>
+        <form method="POST" action="/submit">
+            <input type="text" name="username" placeholder="Enter your name to Play" required>
+            <button type="submit">Start Game</button>
+        </form>
+    </div>
+    {% elif msg and imgs%}
+    <div class="sel-img">
+        <p>{{ msg }}</p>
+        <div class="img-grp">
+            {% for img in imgs %}
+            <form method="POST" action="{{ url_for('game') }}">
+                <input type="hidden" name="ind" value="{{ loop.index0 }}">
+                <button type="submit">
+                    <img src="{{ url_for('static', filename='images/' + img) }}" alt="{{ loop.index0 }}">
+                </button>
+                <p>{{ img[:-4] }}</p>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+    {% elif msg and sel_img %}
+    <div class="win-box">
+        <p>{{ msg }}</p>
+        <P>{{ name }} Score: {{ user_count }} | Bot Score: {{ bot_count }}</P>
+        <div class="sel-grp">
+            <div class="sel-grp-user">
+                <p>{{name}} Selected</p>
+                <img src="{{ url_for('static', filename='images/' + sel_img[0]) }}" alt="user_sel">
+                <p>{{ sel_img[0][:-4] }}</p>
+            </div>
+            <div class="sel-grp-bot">
+                <p>Bot Selected</p>
+                <img src="{{ url_for('static', filename='images/' + sel_img[1]) }}" alt="bot_sel">
+                <p>{{ sel_img[1][:-4] }}</p>
+            </div>
+        </div>
+        <a href="{{ url_for('submit') }}">Click to next Move!</a>
+    </div>
+    {% elif win_msg %}
+    <div class="win-box">
+        <p>{{ win_msg }}</p>
+        <p>{{ name }} Score: {{ tu_cnt }} | Bot Score: {{ tb_cnt }}</p>
+        <a href="/" id="home">Click Here to go Home Page</a>
+    </div>
+    {% endif %}
+</body>
+</html>
